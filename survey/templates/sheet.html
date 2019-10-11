@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+    <!-- http://getbootstrap.com/docs/4.1/components/alerts/ -->
+    <div class="container-fluid">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">E-Mail</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Favorite Movie</th>
+                  <th scope="col">Favorite Food</th>
+                </tr>
+             </thead>
+        <tbody>{{ tbody }}</tbody>
+        </table>
+    </div>
+    <script>
+        $.get("/sheets",function(data){
+
+            let info = "";
+            let len = data.length;
+
+            for(let i = 0;  i<len; i++)
+            {
+                info += "<tr><td>"+data[i][0]+"</td><td>"+data[i][1]+"</td><td>"+data[i][2]+"</td><td>"+data[i][3]+"</td><td>"+data[i][4]+"</td><td>"+data[i][5]+"</td><td></tr>";
+            }
+
+            document.querySelector("tbody").innerHTML = info;
+        });
+    </script>
+{% endblock %}
