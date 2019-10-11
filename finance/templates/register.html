@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <header>
+        <div class="alert alert-warning border text-center" id="flash" role="alert" hidden>
+        </div>
+    </header>
+    <form action="/register" method="post" onsubmit="checkUser()">
+        <div class="form-group">
+            <input autocomplete="off" autofocus id="user" class="form-control" name="username" placeholder="Username" type="text" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="password" id="psw" placeholder="Password" type="password" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="confirmation" id="checkPsw" placeholder="Confirm Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit" onclick="check()">Register</button>
+    </form>
+    <script>
+
+       (function() {
+          'use strict';
+          window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+              form.addEventListener('submit', function(event) {
+
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+
+
+                form.classList.add('was-validated');
+              }, false);
+            });
+          }, false);
+        })();
+        var isTaken = false;
+        let msg = document.getElementById("flash");
+
+        function check(){
+            if(isTaken){
+                document.getElementById("user").focus();
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            if(document.getElementById("psw").value != document.getElementById("checkPsw").value){
+                  event.preventDefault();
+                  event.stopPropagation();
+                  alert("The passwords are not the same!");
+                  return;
+            }
+
+            if(document.getElementById('psw').value.length < 6){
+                document.getElementById('psw').value = ""
+                document.getElementById('checkPsw').value = ""
+                document.getElementById('psw').placeholder = "Password must be 6 characters or more"
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+        }
+
+        function checkUser(){
+
+            var name = document.getElementById('user').value;
+
+            $.get("/check?username="+name,function(data){
+                if(data == false){
+                    msg.hidden = false;
+                    msg.innerHTML = "This username is already taken";
+                    isTaken = true;
+                }else{
+                  isTaken = false;
+                  msg.hidden = true;
+                  forms.submit()
+                }
+            });
+
+        }
+
+    </script>
+{% endblock %}
